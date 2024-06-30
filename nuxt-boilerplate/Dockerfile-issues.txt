@@ -1,0 +1,35 @@
+# build stage
+FROM --platform=linux/amd64 node:18.3.0-alpine3.14 as build-stage
+
+# set working directory
+WORKDIR /app
+
+# copy package*.json files
+COPY package*.json ./
+
+# install dependecies
+RUN npm install
+
+# copy all files
+COPY . .
+
+# build application
+RUN npm run build & npm run generate
+
+# nginx state for serving content
+FROM nginx:stable-alpine as production-stage
+
+# remove the default nginx.conf
+RUN rm -rf /usr/share/nginx/html/*
+
+# copy the nginx configuration
+COPY --from=build-stage /app/nginx.conf /etc/nginx/conf.d
+
+# copy static files from build-state
+COPY --from=build-stage /app/.output/public /usr/share/nginx/html
+
+# expose port 80
+EXPOSE 80
+
+# start nginx
+CMD ["nginx", "-g", "daemon off;"]
