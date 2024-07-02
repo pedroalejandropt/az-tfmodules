@@ -28,6 +28,11 @@ variable "availability_zones" {
   default = []
 }
 
+variable "automatic_channel_upgrade" {
+  type    = string
+  default = "patch"
+}
+
 variable "node_name" {
   type = string
 }
@@ -56,9 +61,22 @@ variable "node_vm_size" {
   default  = "Standard_D2_v2"
 }
 
+variable "node_os_disk_size_gb" {
+  type    = number
+  default = 256
+}
+
 variable "subnet_id" {
   type     = string
   nullable = false
+}
+
+variable "service_cidr" {
+  type = string
+}
+
+variable "dns_service_ip" {
+  type = string
 }
 
 variable "tags" {
