@@ -25,42 +25,19 @@ module "boilerplate_vnet" {
   resource_group_name     = module.boilerplate_resource_group.name
   resource_group_location = module.boilerplate_resource_group.location
   name                    = "boilerplate-vnet"
-  // address_space           = "10.0.0.0/16"
+  address_space = [
+    "10.245.12.0/22",
+    "10.245.16.0/22"
+  ]
 }
 
 module "boilerplate_subnet" {
-  source = "../modules/subnet"
-  name   = "test-subnet"
-  // address_prefix      = "10.0.1.0/24"
+  source              = "../modules/subnet"
+  name                = "test-subnet"
+  address_prefix      = ["10.245.16.0/22"]
   vnet_name           = module.boilerplate_vnet.name
   resource_group_name = module.boilerplate_resource_group.name
 }
-
-/* module "boilerplate_public_ip_dormakaba" {
-  source                  = "../modules/public-ip"
-  name                    = "public-ip-dormakaba"
-  resource_group_name     = module.boilerplate_resource_group.name
-  resource_group_location = module.boilerplate_resource_group.location
-}
-
-module "boilerplate_public_ip_unknown" {
-  source                  = "../modules/public-ip"
-  name                    = "public-ip-unknown"
-  resource_group_name     = module.boilerplate_resource_group.name
-  resource_group_location = module.boilerplate_resource_group.location
-}
-
-module "boilerplate_lb" {
-  source                  = "../modules/load-balancer"
-  name                    = "boilerplate-lb"
-  resource_group_location = module.boilerplate_resource_group.location
-  resource_group_name     = module.boilerplate_resource_group.name
-  sku                     = "Standard"
-  public_ip_list = [
-    { name = module.boilerplate_public_ip_dormakaba.name, id = module.boilerplate_public_ip_dormakaba.id },
-    { name = module.boilerplate_public_ip_unknown.name, id = module.boilerplate_public_ip_unknown.id }
-  ]
-} */
 
 module "boilerplate_container_registry" {
   source                  = "../modules/container-registry"
@@ -71,19 +48,28 @@ module "boilerplate_container_registry" {
 }
 
 module "boilerplate_k8_cluster" {
-  source                  = "../modules/kubernetes"
-  name                    = "boilerplate-cluster"
-  resource_group_location = module.boilerplate_resource_group.location
-  resource_group_name     = module.boilerplate_resource_group.name
-  dns_prefix              = "aks"
-  node_name               = "testnode"
-  availability_zones      = [3]
-  enable_auto_scaling     = true
-  node_count              = 1
-  node_min_count          = 1
-  node_max_count          = 2
-  node_vm_size            = "Standard_D8s_v4"
-  subnet_id               = module.boilerplate_subnet.id
+  source                    = "../modules/kubernetes"
+  name                      = "boilerplate-cluster"
+  resource_group_location   = module.boilerplate_resource_group.location
+  resource_group_name       = module.boilerplate_resource_group.name
+  dns_prefix                = "aks"
+  automatic_channel_upgrade = "patch"
+
+  // TODO: create as a object variable node_pool
+  node_name           = "testnode"
+  node_count          = 1
+  node_min_count      = 1
+  node_max_count      = 2
+  node_vm_size        = "Standard_D8s_v4"
+  enable_auto_scaling = true
+  subnet_id           = module.boilerplate_subnet.id
+  availability_zones  = [3]
+  //END
+
+  // TODO: create as a object variable network_profile
+  service_cidr   = "10.245.14.0/23"
+  dns_service_ip = "10.245.14.10"
+  // END
 
   role_name             = "AcrPull"
   container_registry_id = module.boilerplate_container_registry.id
