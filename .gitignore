@@ -2,3 +2,10 @@
 *.tfstate
 *.tfstate.backup
 *.sh
+
+~/
+.DS_Store
+.vscode/
+
+local.tfvars
+*.txt
