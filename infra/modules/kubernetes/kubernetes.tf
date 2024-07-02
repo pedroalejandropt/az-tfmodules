@@ -6,6 +6,7 @@ resource "azurerm_kubernetes_cluster" "kube_cluster" {
   kubernetes_version        = var.kubernetes_version
   sku_tier                  = "Standard"
   automatic_channel_upgrade = var.automatic_channel_upgrade
+  node_resource_group       = "${var.node_name}-resource-group"
 
   default_node_pool {
     name                = var.node_name
