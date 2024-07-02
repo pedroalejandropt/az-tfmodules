@@ -117,5 +117,10 @@ Deploy resources to monitoring the cluster in Azure Kubernetes Service (AKS). Th
     4. Kubernetes / Persistent Volumes
     5. **User could create their own dashboards**
 
+## Boilerplate Application Diagram
+
+![app diagram](https://github.com/pedroalejandropt/az-tfmodules/blob/main/docs/application-infra.png?raw=true)
+
+
 ## License
 This project is licensed under the MIT License.
