@@ -11,7 +11,6 @@
 - **nuxt-boilerplate**: Boilerplate code for Nuxt.js, integrated with Nginx for frontend development.
     - **Dockerfile**: Constains the structure to build the nuxt image integrated with nginx.
     - **docker-compose**: This files create the image and start it, using a simple command line.
-- **grafana.yml**: Configuration for Grafana, a monitoring and analytics platform.
 - **application.yml**: A simple application (deployments, services, ingress, ...) setup by YAML file.
 
 ## Azure Resources
@@ -96,11 +95,27 @@ To deploy resources to an Azure Kubernetes Service (AKS) cluster using a YAML fi
 
 ### Important
     
-- Before create the resources into the AKS cluster is important install a dependecy to use the ingress feature of nginx (just for nginx applications)
+- Before create the resources into the AKS cluster is important install a dependecy to use the ingress feature of nginx (just for nginx applications). This is an one time operation.
 
     ```sh
     kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/     
     ```
+
+## Monitoring
+Deploy resources to monitoring the cluster in Azure Kubernetes Service (AKS). This is an one time operation.
+* Use the following commands, install helm if necessary `brew install helm` or [here](https://helm.sh/docs/intro/install/):
+    ```sh
+    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+    helm repo update
+    helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace
+    ```
+* List of the most useful dashboards:
+
+    1. Kubernetes / Networking / Cluster
+    2. Kubernetes / Networking / Namespace (Pods)
+    3. Kubernetes / Networking / Pod
+    4. Kubernetes / Persistent Volumes
+    5. **User could create their own dashboards**
 
 ## License
 This project is licensed under the MIT License.
