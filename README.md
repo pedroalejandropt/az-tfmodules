@@ -98,7 +98,7 @@ To deploy resources to an Azure Kubernetes Service (AKS) cluster using a YAML fi
 - Before create the resources into the AKS cluster is important install a dependecy to use the ingress feature of nginx (just for nginx applications). This is an one time operation.
 
     ```sh
-    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/     
+    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
     ```
 
 ## Monitoring
