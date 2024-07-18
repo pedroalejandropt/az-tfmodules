@@ -1,23 +1,23 @@
 resource "azurerm_kubernetes_cluster" "kube_cluster" {
   name                      = var.name
-  location                  = var.resource_group_location
-  resource_group_name       = var.resource_group_name
+  location                  = var.resource_group.location
+  resource_group_name       = var.resource_group.name
   dns_prefix                = var.name
-  kubernetes_version        = var.kubernetes_version
+  kubernetes_version        = var.k8_version
   sku_tier                  = "Standard"
   automatic_channel_upgrade = var.automatic_channel_upgrade
-  node_resource_group       = "${var.node_name}-resource-group"
+  node_resource_group       = "${var.node_pool.name}-resource-group"
 
   default_node_pool {
-    name                = var.node_name
-    node_count          = var.node_count
-    vm_size             = var.node_vm_size
-    os_disk_size_gb     = var.node_os_disk_size_gb
-    enable_auto_scaling = var.enable_auto_scaling
-    min_count           = var.node_min_count
-    max_count           = var.node_max_count
-    type                = "VirtualMachineScaleSets"
-    zones               = var.availability_zones
+    name                = var.node_pool.name
+    node_count          = var.node_pool.count
+    vm_size             = var.node_pool.vm_size
+    os_disk_size_gb     = var.node_pool.os_disk_size_gb
+    enable_auto_scaling = var.node_pool.enable_auto_scaling
+    min_count           = var.node_pool.min_count
+    max_count           = var.node_pool.max_count
+    type                = var.node_pool.type
+    zones               = var.node_pool.availability_zones
     vnet_subnet_id      = var.subnet_id
   }
 
@@ -26,25 +26,12 @@ resource "azurerm_kubernetes_cluster" "kube_cluster" {
   }
 
   network_profile {
-    network_plugin     = "azure"
-    network_policy     = "azure"
-    service_cidr       = var.service_cidr
-    dns_service_ip     = var.dns_service_ip
-    docker_bridge_cidr = "172.17.0.1/16"
+    network_plugin     = var.network_profile.network_plugin
+    network_policy     = var.network_profile.network_policy
+    service_cidr       = var.network_profile.service_cidr
+    dns_service_ip     = var.network_profile.dns_service_ip
+    docker_bridge_cidr = var.network_profile.docker_bridge_cidr
   }
-
-  ## block access from other ip
-  # api_server_access_profile {
-  #   authorized_ip_ranges = [
-  #     "5.102.146.111/32"
-  #   ]
-  # }
-
-  // TODO: check later
-  /* dynamic "tags" {
-    for_each    = []
-    Environment = "Production"
-  } */
 }
 
 resource "azurerm_role_assignment" "role_assignment" {

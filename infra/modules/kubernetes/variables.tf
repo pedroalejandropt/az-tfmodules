@@ -1,11 +1,3 @@
-variable "resource_group_name" {
-  type = string
-}
-
-variable "resource_group_location" {
-  type = string
-}
-
 variable "name" {
   type = string
 }
@@ -14,18 +6,9 @@ variable "dns_prefix" {
   type = string
 }
 
-variable "kubernetes_version" {
+variable "k8_version" {
   type    = string
   default = "1.27"
-}
-
-variable "enable_auto_scaling" {
-  type = bool
-}
-
-variable "availability_zones" {
-  type    = list(string)
-  default = []
 }
 
 variable "automatic_channel_upgrade" {
@@ -33,37 +16,37 @@ variable "automatic_channel_upgrade" {
   default = "patch"
 }
 
-variable "node_name" {
-  type = string
+variable "resource_group" {
+  type = object({
+    name     = string
+    location = string
+  })
+  nullable = false
 }
 
-variable "node_count" {
-  type     = number
-  nullable = true
-  default  = 1
-}
-
-variable "node_min_count" {
-  type     = number
-  nullable = true
-  default  = 1
-}
-
-variable "node_max_count" {
-  type     = number
-  nullable = true
-  default  = 100
-}
-
-variable "node_vm_size" {
-  type     = string
-  nullable = true
-  default  = "Standard_D2_v2"
-}
-
-variable "node_os_disk_size_gb" {
-  type    = number
-  default = 256
+variable "node_pool" {
+  type = object({
+    name                = string
+    count               = number
+    min_count           = number
+    max_count           = number
+    type                = string
+    vm_size             = string
+    os_disk_size_gb     = number
+    enable_auto_scaling = bool
+    availability_zones  = list(string)
+  })
+  default = {
+    name                = "default-pool"
+    count               = 1
+    min_count           = 1
+    max_count           = 100
+    type                = "VirtualMachineScaleSets"
+    vm_size             = "Standard_D2_v2"
+    os_disk_size_gb     = 256
+    enable_auto_scaling = true
+    availability_zones  = []
+  }
 }
 
 variable "subnet_id" {
@@ -71,12 +54,15 @@ variable "subnet_id" {
   nullable = false
 }
 
-variable "service_cidr" {
-  type = string
-}
-
-variable "dns_service_ip" {
-  type = string
+variable "network_profile" {
+  type = object({
+    network_plugin     = string
+    network_policy     = string
+    service_cidr       = string
+    dns_service_ip     = string
+    docker_bridge_cidr = string
+  })
+  nullable = false
 }
 
 variable "tags" {
@@ -92,9 +78,5 @@ variable "role_name" {
 }
 
 variable "container_registry_id" {
-  type = string
-}
-
-variable "ad_name" {
   type = string
 }

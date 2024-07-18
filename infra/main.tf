@@ -5,6 +5,7 @@ terraform {
       version = "=3.109.0"
     }
   }
+  # TODO: Reference to the tfstate in Azure
 }
 
 provider "azurerm" {
@@ -17,5 +18,5 @@ provider "azurerm" {
 }
 
 module "boilerplate" {
-  source = "./applications"
+  source = "./applications/boilerplate"
 }
