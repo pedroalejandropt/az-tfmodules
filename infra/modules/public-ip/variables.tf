@@ -19,3 +19,8 @@ variable "sku" {
   type    = string
   default = "Standard"
 }
+
+variable "ip_address" {
+  type    = string
+  default = null
+}
