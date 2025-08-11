@@ -28,6 +28,7 @@ variable "node_pool" {
   type = object({
     name                = string
     count               = number
+    max_pods            = number
     min_count           = number
     max_count           = number
     type                = string
@@ -39,10 +40,11 @@ variable "node_pool" {
   default = {
     name                = "default-pool"
     count               = 1
+    max_pods            = 110
     min_count           = 1
     max_count           = 100
     type                = "VirtualMachineScaleSets"
-    vm_size             = "Standard_D2_v2"
+    vm_size             = "Standard_D8s_v4"
     os_disk_size_gb     = 256
     enable_auto_scaling = true
     availability_zones  = []
