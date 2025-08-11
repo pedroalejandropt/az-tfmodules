@@ -14,3 +14,8 @@ variable "sku" {
   type    = string
   default = "Basic"
 }
+
+variable "admin_enabled" {
+  type    = bool
+  default = false
+}
